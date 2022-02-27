@@ -1,0 +1,57 @@
+.appContainer{
+  background-color: rgb(255, 255, 255);
+  border: 5px solid black ;
+  border-radius: 5px;
+  width: 50%;
+  position: relative;
+  margin: 100px auto;
+  padding: 10px; 
+}
+
+.defaultElements{
+  text-align: center;
+  padding: 10px;
+  background-color: rgb(141, 202, 230);
+  border: 2px dashed black ;
+  border-radius: 5px;
+}
+
+#taskContainer{
+  align-content: center;
+  justify-content: space-evenly;
+  align-items: baseline;
+  height: auto;
+  margin-top: 20px;
+}
+
+#taskElement{
+  padding: 20px;
+  margin: 20px auto;
+  background-color: #E69A8DFF;
+  border-radius: 5px;
+  border: 2px dashed black ;
+
+}
+
+#taskDetail{
+  width: 50%;
+  display: inline-block;  
+  height: auto; 
+  padding: 10px;
+}
+
+#checkbox{
+  padding: 10px;
+  margin-right: 5px;
+  float: left;
+}
+
+#taskButtons{
+  pointer-events: auto;
+  cursor: pointer;
+  border: 2px solid black ;
+  border-radius: 5px;
+  background-color: rgb(141, 202, 230);
+  margin: auto 10px;
+  height: 50px;
+}
