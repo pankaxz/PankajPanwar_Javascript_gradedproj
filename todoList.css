@@ -24,7 +24,7 @@
   margin-top: 20px;
 }
 
-#taskElement{
+.taskElement{
   padding: 20px;
   margin: 20px auto;
   background-color: #E69A8DFF;
@@ -40,7 +40,7 @@
   padding: 10px;
 }
 
-#checkbox{
+.toggle{
   padding: 10px;
   margin-right: 5px;
   float: left;

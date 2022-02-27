@@ -23,16 +23,18 @@ function Model() {
 
   this.DeleteTodo = (id) => {
     this.todos = this.todos.filter((todo) => todo.id !== id)
+    console.log(this.todos)
     this.OnTodoListChanged(this.todos)
   }
 
   this.ToggleTodo = (id) => {
-    this.todo = this.todo.map((todo) => {
+    this.todos = this.todos.map((todo) => {
+      console.log(this.todos)
       todo.id === id
         ? {
             id: todo.id,
             text: todo.text,
-            complete: true,
+            complete: !todo.complete,
           }
         : todo
     })
@@ -59,8 +61,9 @@ function View() {
     return element
   }
 
+  this.input = this.GetElement('#taskText')
+
   this._todoText = () => {
-    console.log(this.input.value)
     return this.input.value
   }
 
@@ -73,11 +76,50 @@ function View() {
   this.DeleteAll = () => {
     while (this.todoList.firstChild) {
       this.todoList.removeChild(this.todoList.firstChild)
-      console.log(this.todoList)
     }
   }
 
+  this.CreateTaskElements = (todo) => {
+    console.log(todo)
+    const tempTaskElement = this.CreateElement('div', 'taskElement')
+    tempTaskElement.setAttribute('id', todo.id)
+
+    const span = this.CreateElement('span')
+    span.setAttribute('id', 'taskDetail')
+    span.contentEditable = true
+    span.classList.add('editable')
+
+    const deleteButton = this.CreateElement('button', 'delete')
+    deleteButton.setAttribute('id', 'taskButtons')
+    deleteButton.innerText = 'DELETE'
+
+    const editButton = this.CreateElement('button', 'edit')
+    editButton.setAttribute('id', 'taskButtons')
+    editButton.innerText = 'EDIT'
+
+    const checkbox = this.CreateElement('input', 'toggle')
+    checkbox.setAttribute('id', todo.id)
+    checkbox.type = 'checkbox'
+    checkbox.checked = todo.complete
+
+    if (todo.complete) {
+      const strike = this.CreateElement('s')
+      strike.textContent = todo.text
+      span.append(strike)
+    } else {
+      span.textContent = todo.text
+    }
+    span.append(checkbox)
+    tempTaskElement.append(span)
+    tempTaskElement.append(deleteButton)
+    tempTaskElement.append(editButton)
+
+    return tempTaskElement
+  }
+
   this.DisplayTodos = (todos) => {
+    this.DeleteAll()
+
     if (todos.length === 0) {
       console.log('Nothing to do!')
       let p = this.CreateElement('p')
@@ -85,40 +127,7 @@ function View() {
       this.todoList.append(p)
     } else {
       todos.forEach((todo) => {
-        const ele = this.CreateElement('div')
-        ele.setAttribute('id', 'taskElement')
-
-        const span = this.CreateElement('span')
-        span.setAttribute('id', 'taskDetail')
-        span.contentEditable = true
-        span.classList.add('editable')
-
-        const deleteButton = this.CreateElement('button', 'delete')
-        deleteButton.setAttribute('id', 'taskButtons')
-        deleteButton.innerText = 'DELETE'
-
-        const editButton = this.CreateElement('button', 'edit')
-        editButton.setAttribute('id', 'taskButtons')
-        editButton.innerText = 'EDIT'
-
-        const checkbox = this.CreateElement('input', 'toggle')
-        checkbox.setAttribute('id', 'checkbox')
-        checkbox.type = 'checkbox'
-        checkbox.checked = todo.complete
-
-        if (todo.complete) {
-          const strike = this.CreateElement('s')
-          strike.textContent = todo.text
-          span.append(strike)
-        } else {
-          span.textContent = todo.text
-        }
-        span.append(checkbox)
-        ele.append(span)
-        ele.append(deleteButton)
-        ele.append(editButton)
-
-        this.todoList.append(ele)
+        this.todoList.append(this.CreateTaskElements(todo))
       })
     }
   }
@@ -126,8 +135,8 @@ function View() {
   this.AddTodoHandler = (handler) => {
     document.getElementById('addButton').addEventListener('click', () => {
       if (this._todoText) {
-        handler('from view')
-        // this._resetInput()
+        handler(this._todoText())
+        this._resetInput()
       }
     })
   }
@@ -136,7 +145,6 @@ function View() {
     this.todoList.addEventListener('click', (event) => {
       if (event.target.className === 'delete') {
         const id = parseInt(event.target.parentElement.id)
-        console.log('delete')
         handler(id)
       }
     })
@@ -147,8 +155,7 @@ function View() {
   this.ToggleTodoHandler = (handler) => {
     this.todoList.addEventListener('change', (event) => {
       if (event.target.className === 'toggle') {
-        const id = parseInt(event.target.parentElement.id)
-        console.log('toggle')
+        const id = parseInt(event.target.id)
         handler(id)
       }
     })
@@ -165,6 +172,7 @@ function Controller(model, view) {
   this.view = view
 
   this.OnTodoListChanged = (todos) => {
+    console.log(todos)
     this.view.DisplayTodos(todos)
   }
 
@@ -188,6 +196,7 @@ function Controller(model, view) {
   this.view.AddTodoHandler(this.AddToDoList)
   this.view.DeleteTodoHandler(this.DeleteFromTodoList)
   this.view.ToggleTodoHandler(this.ToggleFromTodoList)
+
   this.OnTodoListChanged(this.model.todos)
 }
 
