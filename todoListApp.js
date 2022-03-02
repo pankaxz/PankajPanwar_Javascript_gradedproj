@@ -2,42 +2,38 @@ function Model() {
   this.todos = []
 
   this.AddTodo = (description) => {
-    console.log('actual input', description)
-    let todo = {
-      id: this.todos.length > 0 ? this.todos.length + 1 : 1,
-      text: description,
-      complete: false,
+    if (description.length > 0) {
+      let todo = {
+        id: this.todos.length > 0 ? this.todos.length + 1 : 1,
+        text: description,
+        complete: false,
+      }
+      this.todos.push(todo)
+      this.OnTodoListChanged(this.todos)
     }
-    this.todos.push(todo)
-    this.OnTodoListChanged(this.todos)
   }
 
   this.EditTodo = (id, updatedDescription) => {
-    this.todos = this.todos.map((todo) => {
+    console.log('line 16')
+    this.todos = this.todos.map((todo) =>
       todo.id === id
         ? { id: todo.id, text: updatedDescription, complete: false }
         : todo
-    })
+    )
+
     this.OnTodoListChanged(this.todos)
   }
 
   this.DeleteTodo = (id) => {
+    console.log('id: ', id)
     this.todos = this.todos.filter((todo) => todo.id !== id)
     console.log(this.todos)
     this.OnTodoListChanged(this.todos)
   }
 
   this.ToggleTodo = (id) => {
-    this.todos = this.todos.map((todo) => {
-      console.log(this.todos)
-      todo.id === id
-        ? {
-            id: todo.id,
-            text: todo.text,
-            complete: !todo.complete,
-          }
-        : todo
-    })
+    console.log('this.todos : ', this.todos)
+    this.todos = this.todos.map((todo, index) => console.log(index))
     this.OnTodoListChanged(this.todos)
   }
 
@@ -45,7 +41,6 @@ function Model() {
     this.OnTodoListChanged = callback
   }
 }
-
 /**
  * VIEW
  */
@@ -67,11 +62,24 @@ function View() {
     return this.input.value
   }
 
+  this._todoTemporaryText = () => {
+    return this.input.value
+  }
+
   this._resetInput = () => {
     this.input.value = ''
   }
 
   this.todoList = this.GetElement('#taskContainer')
+
+  // this._tempTodoText
+  // this._initLocalListeners = function () {
+  //   this.todoList.addEventListener('click', (event) => {
+  //     if (event.target.class === 'editable') {
+  //       console.log('yes change')
+  //     }
+  //   })
+  // }
 
   this.DeleteAll = () => {
     while (this.todoList.firstChild) {
@@ -84,10 +92,8 @@ function View() {
     const tempTaskElement = this.CreateElement('div', 'taskElement')
     tempTaskElement.setAttribute('id', todo.id)
 
-    const span = this.CreateElement('span')
-    span.setAttribute('id', 'taskDetail')
-    span.contentEditable = true
-    span.classList.add('editable')
+    const span = this.CreateElement('span', 'taskDetail')
+    span.setAttribute('id', todo.id)
 
     const deleteButton = this.CreateElement('button', 'delete')
     deleteButton.setAttribute('id', 'taskButtons')
@@ -109,7 +115,8 @@ function View() {
     } else {
       span.textContent = todo.text
     }
-    span.append(checkbox)
+
+    // span.append(checkbox)
     tempTaskElement.append(span)
     tempTaskElement.append(deleteButton)
     tempTaskElement.append(editButton)
@@ -118,6 +125,7 @@ function View() {
   }
 
   this.DisplayTodos = (todos) => {
+    console.log('Display')
     this.DeleteAll()
 
     if (todos.length === 0) {
@@ -150,7 +158,20 @@ function View() {
     })
   }
 
-  this.EditTodoHandler = (handler) => {}
+  this.bindEditTodo = (handler) => {
+    let tempToDoText = this._todoText()
+    console.log(this._todoText())
+    this.todoList.addEventListener('click', (event) => {
+      if (event.target.className === 'edit') {
+        console.log('line 161')
+        const id = parseInt(event.target.parentElement.id)
+        console.log(id, tempToDoText, document.querySelector('.taskDetail'))
+        handler(id, tempToDoText)
+        document.getElementById(id).contentEditable = true
+        document.getElementById(id).focus()
+      }
+    })
+  }
 
   this.ToggleTodoHandler = (handler) => {
     this.todoList.addEventListener('change', (event) => {
@@ -181,6 +202,7 @@ function Controller(model, view) {
   }
 
   this.EditTodoList = (id, todoText) => {
+    console.log('line 199')
     this.model.EditTodo(id, todoText)
   }
 
@@ -195,9 +217,13 @@ function Controller(model, view) {
   this.model.OnTodoListChangedHandler(this.OnTodoListChanged)
   this.view.AddTodoHandler(this.AddToDoList)
   this.view.DeleteTodoHandler(this.DeleteFromTodoList)
+  this.view.bindEditTodo(this.EditTodoList)
   this.view.ToggleTodoHandler(this.ToggleFromTodoList)
-
   this.OnTodoListChanged(this.model.todos)
 }
 
-let app = new Controller(new Model(), new View())
+window.addEventListener('DOMContentLoaded', Start, false)
+
+function Start() {
+  let app = new Controller(new Model(), new View())
+}
