@@ -175,11 +175,6 @@ function View() {
   }
 }
 
-/**
- * CONTROLLER
- * @param {*} model
- * @param {*} view
- */
 function Controller(model, view) {
   this.model = model
   this.view = view
