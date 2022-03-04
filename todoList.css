@@ -1,18 +1,19 @@
 .appContainer{
   background-color: rgb(255, 255, 255);
-  border: 5px solid black ;
+  /* border: 5px solid black ; */
   border-radius: 5px;
   width: 50%;
   position: relative;
   margin: 100px auto;
   padding: 10px; 
+  box-shadow: 0px 0px 7px 1px #000000;
 }
 
 .defaultElements{
   text-align: center;
   padding: 10px;
-  background-color: rgb(141, 202, 230);
-  border: 2px dashed black ;
+  background-color: rgb(141, 162, 230);
+  box-shadow: 0px 0px 7px 1px #000000;
   border-radius: 5px;
 }
 
@@ -30,7 +31,6 @@
   background-color: #E69A8DFF;
   border-radius: 5px;
   border: 2px dashed black ;
-
 }
 
 .taskDetail{
@@ -40,6 +40,7 @@
   padding: 10px;
   border: 1px solid black;
   border-radius: 10px;
+  word-wrap: break-word;
 }
 
 .toggle{
@@ -55,5 +56,24 @@
   border-radius: 5px;
   background-color: rgb(141, 202, 230);
   margin: auto 10px;
-  height: 50px;
+  height: 40px;
+}
+
+#taskText{
+  border: 2px solid black ;
+  border-radius: 5px;
+  background-color: rgb(141, 202, 230);
+  margin: auto 10px;
+  height: 25px;
+  width: 70%;
+}
+
+#addButton{
+  pointer-events: auto;
+  cursor: pointer;
+  border: 2px solid black ;
+  border-radius: 5px;
+  background-color: rgb(245, 190, 89);
+  margin: auto 10px;
+  height: 30px;
 }
